@@ -1,0 +1,70 @@
+{
+  "app": {
+    "title": "Organisation Directory"
+  },
+  "list": {
+    "heading": "Organisations",
+    "searchPlaceholder": "Search by name…",
+    "statusFilterLabel": "Status",
+    "statusAll": "All statuses",
+    "columnName": "Name",
+    "columnStatus": "Status",
+    "columnMembers": "Members",
+    "columnOwner": "Owner",
+    "columnCreated": "Created",
+    "sortAsc": "sorted ascending",
+    "sortDesc": "sorted descending",
+    "unnamed": "(unnamed organisation)",
+    "unknownOwner": "—",
+    "unknownDate": "—",
+    "unknownMembers": "—",
+    "duplicateIdBadge": "Duplicate ID",
+    "duplicateIdTooltip": "Another row in this list also has ID {{id}}. Both are shown; please verify with the source system.",
+    "loadingProgress": "Loading organisations… {{loaded}} of {{total}} so far",
+    "loadingStart": "Loading organisations…",
+    "loadedCount": "Showing {{count}} of {{total}} organisations",
+    "resultCount": "{{count}} organisations match your filters"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "suspended": "Suspended",
+    "unknown": "Unknown"
+  },
+  "states": {
+    "emptyTitle": "No organisations found",
+    "emptyBody": "Try a different search term or status filter.",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn't load the organisation list. This mock API fails at random about 15% of the time.",
+    "partialErrorTitle": "Some records failed to load",
+    "partialErrorBody": "{{failedPages}} page(s) could not be loaded after retrying. You can retry, or continue with what loaded.",
+    "retry": "Retry"
+  },
+  "form": {
+    "heading": "Add organisation",
+    "nameLabel": "Name",
+    "nameHint": "3–80 characters, must be unique (case-insensitive)",
+    "statusLabel": "Status",
+    "statusPlaceholder": "Select a status",
+    "ownerEmailLabel": "Owner email",
+    "memberCountLabel": "Member count (optional)",
+    "submit": "Add organisation",
+    "submitting": "Adding…",
+    "cancel": "Cancel",
+    "success": "\"{{name}}\" was added.",
+    "formHasErrors": "This form has errors. Please review the highlighted fields before submitting.",
+    "errors": {
+      "required": "This field is required.",
+      "minlength": "Must be at least {{requiredLength}} characters.",
+      "maxlength": "Must be no more than {{requiredLength}} characters.",
+      "email": "Enter a valid email address.",
+      "min": "Must be 0 or more.",
+      "duplicateName": "An organisation with this name already exists.",
+      "invalidStatus": "Choose a status."
+    }
+  },
+  "a11y": {
+    "statusIcon": "Status: {{status}}",
+    "sortButton": "Sort by {{field}}"
+  }
+}
