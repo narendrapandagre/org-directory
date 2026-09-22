@@ -1,0 +1,142 @@
+<header class="page-header">
+  <h1>{{ 'app.title' | t }}</h1>
+  <button type="button" class="btn btn--primary" (click)="showCreateForm.set(!showCreateForm())">
+    {{ (showCreateForm() ? 'form.cancel' : 'form.heading') | t }}
+  </button>
+</header>
+
+@if (successMessage(); as name) {
+  <p class="toast toast--success" role="status">
+    {{ 'form.success' | t: { name } }}
+  </p>
+}
+
+@if (showCreateForm()) {
+  <app-create-organisation-form
+    (created)="onCreated($event)"
+    (cancelled)="showCreateForm.set(false)"
+  />
+}
+
+<section class="toolbar" aria-label="Filters">
+  <input
+    type="search"
+    class="toolbar__search"
+    [value]="searchInputValue()"
+    (input)="onSearchInput($any($event.target).value)"
+    [placeholder]="'list.searchPlaceholder' | t"
+    [attr.aria-label]="'list.searchPlaceholder' | t"
+  />
+
+  <label class="toolbar__filter">
+    <span>{{ 'list.statusFilterLabel' | t }}</span>
+    <select
+      [value]="query().status"
+      (change)="onStatusChange($any($event.target).value)"
+    >
+      @for (s of statusOptions; track s) {
+        <option [value]="s">
+          {{ s === 'all' ? ('list.statusAll' | t) : ('status.' + s | t) }}
+        </option>
+      }
+    </select>
+  </label>
+</section>
+
+@switch (phase()) {
+  @case ('loading') {
+    <div class="state state--loading" role="status">
+      @if (totalCount(); as total) {
+        <p>{{ 'list.loadingProgress' | t: { loaded: loadedCount(), total } }}</p>
+      } @else {
+        <p>{{ 'list.loadingStart' | t }}</p>
+      }
+      <div class="progress-bar">
+        <div
+          class="progress-bar__fill"
+          [style.width.%]="totalCount() ? (loadedCount() / totalCount()!) * 100 : 5"
+        ></div>
+      </div>
+    </div>
+  }
+  @case ('error') {
+    <div class="state state--error" role="alert">
+      <h2>{{ 'states.errorTitle' | t }}</h2>
+      <p>{{ 'states.errorBody' | t }}</p>
+      <button type="button" class="btn btn--primary" (click)="onRetry()">
+        {{ 'states.retry' | t }}
+      </button>
+    </div>
+  }
+  @default {
+    @if (phase() === 'partial-error') {
+      <div class="banner banner--warning" role="alert">
+        <p>{{ 'states.partialErrorTitle' | t }}: {{ 'states.partialErrorBody' | t: { failedPages: failedPages() } }}</p>
+        <button type="button" class="btn btn--ghost" (click)="onRetry()">
+          {{ 'states.retry' | t }}
+        </button>
+      </div>
+    }
+
+    @if (rows().length === 0) {
+      <div class="state state--empty">
+        <h2>{{ 'states.emptyTitle' | t }}</h2>
+        <p>{{ 'states.emptyBody' | t }}</p>
+      </div>
+    } @else {
+      <p class="result-count">
+        {{ 'list.loadedCount' | t: { count: loadedCount(), total: totalCount() ?? loadedCount() } }}
+        · {{ 'list.resultCount' | t: { count: resultSummary() } }}
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <button type="button" class="sort-btn" (click)="onSort('name')" [attr.aria-label]="'a11y.sortButton' | t: { field: ('list.columnName' | t) }">
+                  {{ 'list.columnName' | t }} {{ sortIndicator('name') }}
+                </button>
+              </th>
+              <th>{{ 'list.columnStatus' | t }}</th>
+              <th>{{ 'list.columnMembers' | t }}</th>
+              <th>{{ 'list.columnOwner' | t }}</th>
+              <th>
+                <button type="button" class="sort-btn" (click)="onSort('createdAt')" [attr.aria-label]="'a11y.sortButton' | t: { field: ('list.columnCreated' | t) }">
+                  {{ 'list.columnCreated' | t }} {{ sortIndicator('createdAt') }}
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (org of rows(); track org.id + '-' + $index) {
+              <tr>
+                <td class="cell-name">
+                  <span [class.cell-name--placeholder]="!org.hasName">
+                    {{ org.hasName ? org.name : ('list.unnamed' | t) }}
+                  </span>
+                  @if (org.isDuplicateId) {
+                    <span
+                      class="pill pill--warning"
+                      [title]="'list.duplicateIdTooltip' | t: { id: org.id }"
+                    >{{ 'list.duplicateIdBadge' | t }}</span>
+                  }
+                </td>
+                <td><app-status-badge [status]="org.status" /></td>
+                <td>{{ org.memberCount === null ? ('list.unknownMembers' | t) : org.memberCount }}</td>
+                <td>
+                  @if (org.ownerEmail) {
+                    <span [class.cell-email--invalid]="!org.isOwnerEmailValid">{{ org.ownerEmail }}</span>
+                  } @else {
+                    {{ 'list.unknownOwner' | t }}
+                  }
+                </td>
+                <td>{{ org.createdAt ? (org.createdAt | date: 'mediumDate') : ('list.unknownDate' | t) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+}
