@@ -1,0 +1,78 @@
+<form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <h2 class="form__heading">{{ 'form.heading' | t }}</h2>
+
+  @if (submitAttempted() && form.invalid) {
+    <p class="form__summary" role="alert">{{ 'form.formHasErrors' | t }}</p>
+  }
+
+  <div class="field">
+    <label for="name">{{ 'form.nameLabel' | t }}</label>
+    <input
+      id="name"
+      type="text"
+      formControlName="name"
+      [attr.aria-invalid]="!!errorFor('name')"
+      [attr.aria-describedby]="errorFor('name') ? 'name-error' : 'name-hint'"
+    />
+    <p id="name-hint" class="field__hint">{{ 'form.nameHint' | t }}</p>
+    @if (errorFor('name'); as msg) {
+      <p id="name-error" class="field__error" role="alert">{{ msg }}</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="status">{{ 'form.statusLabel' | t }}</label>
+    <select
+      id="status"
+      formControlName="status"
+      [attr.aria-invalid]="!!errorFor('status')"
+      [attr.aria-describedby]="errorFor('status') ? 'status-error' : null"
+    >
+      <option value="" disabled>{{ 'form.statusPlaceholder' | t }}</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ 'status.' + s | t }}</option>
+      }
+    </select>
+    @if (errorFor('status'); as msg) {
+      <p id="status-error" class="field__error" role="alert">{{ msg }}</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="ownerEmail">{{ 'form.ownerEmailLabel' | t }}</label>
+    <input
+      id="ownerEmail"
+      type="email"
+      formControlName="ownerEmail"
+      [attr.aria-invalid]="!!errorFor('ownerEmail')"
+      [attr.aria-describedby]="errorFor('ownerEmail') ? 'email-error' : null"
+    />
+    @if (errorFor('ownerEmail'); as msg) {
+      <p id="email-error" class="field__error" role="alert">{{ msg }}</p>
+    }
+  </div>
+
+  <div class="field">
+    <label for="memberCount">{{ 'form.memberCountLabel' | t }}</label>
+    <input
+      id="memberCount"
+      type="number"
+      min="0"
+      formControlName="memberCount"
+      [attr.aria-invalid]="!!errorFor('memberCount')"
+      [attr.aria-describedby]="errorFor('memberCount') ? 'members-error' : null"
+    />
+    @if (errorFor('memberCount'); as msg) {
+      <p id="members-error" class="field__error" role="alert">{{ msg }}</p>
+    }
+  </div>
+
+  <div class="form__actions">
+    <button type="button" class="btn btn--ghost" (click)="onCancel()">
+      {{ 'form.cancel' | t }}
+    </button>
+    <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+      {{ (submitting() ? 'form.submitting' : 'form.submit') | t }}
+    </button>
+  </div>
+</form>
